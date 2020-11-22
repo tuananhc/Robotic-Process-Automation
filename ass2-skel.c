@@ -1,45 +1,3 @@
-/* Program to evaluate candidate routines for Robotic Process Automation.
-
-  Skeleton program written by Artem Polyvyanyy, artem.polyvyanyy@unimelb.edu.au,
-  September 2020, with the intention that it be modified by students
-  to add functionality, as required by the assignment specification.
-
-  Student Authorship Declaration:
-
-  (1) I certify that except for the code provided in the initial skeleton
-  file, the  program contained in this submission is completely my own
-  individual work, except where explicitly noted by further comments that
-  provide details otherwise.  I understand that work that has been developed
-  by another student, or by me in collaboration with other students, or by
-  non-students as a result of request, solicitation, or payment, may not be
-  submitted for assessment in this subject.  I understand that submitting for
-  assessment work developed by or in collaboration with other students or
-  non-students constitutes Academic Misconduct, and may be penalized by mark
-  deductions, or by other penalties determined via the University of
-  Melbourne Academic Honesty Policy, as described at
-  https://academicintegrity.unimelb.edu.au.
-
-  (2) I also certify that I have not provided a copy of this work in either
-  softcopy or hardcopy or any other form to any other student, and nor will I
-  do so until after the marks are released. I understand that providing my
-  work to other students, regardless of my intention or any undertakings made
-  to me by that other student, is also Academic Misconduct.
-
-  (3) I further understand that providing a copy of the assignment
-  specification to any form of code authoring or assignment tutoring service,
-  or drawing the attention of others to such services and code that may have
-  been made available via such a service, may be regarded as Student General
-  Misconduct (interfering with the teaching activities of the University
-  and/or inciting others to commit Academic Misconduct).  I understand that
-  an allegation of Student General Misconduct may arise regardless of whether
-  or not I personally make use of such solutions or sought benefit from such
-  actions.
-
-   Signed by: [Tuan Anh Chau]
-   Dated:     [October 16th 2020]
-
-*/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -96,10 +54,6 @@ typedef struct {
 trace_t* make_empty_trace(void);
 trace_t* insert_at_tail(trace_t*, action_t*);
 void free_trace(trace_t*);
-
-/* my function prototypes --------------------------------------------------*/
-
-// add your function prototypes here ...
 void print_state(state_t state);
 void initialize(action_t *action);
 void alter_action(action_t *prev_act, action_t *post_act);
@@ -115,7 +69,6 @@ void stage0(action_t **action_traces, int num_acts, int num_steps, int valid);
 void stage1_2(action_t **action_traces, action_t **actions, 
               int num_acts, int num_steps, int c, int stage);
 int get_actions(action_t **actions, int c);
-int get_num_actions(action_t** action_arr);
 action_t* get_initial_action(int c);
 
 /* where it all happens ----------------------------------------------------*/
@@ -236,9 +189,6 @@ trace_t
     return R;
 }
 
-// Adapted version of the insert_at_foot function by Alistair Moffat:
-// https://people.eng.unimelb.edu.au/ammoffat/ppsaa/c/listops.c
-// Data type and variable names changed
 trace_t 
 *insert_at_tail(trace_t* R, action_t* addr) {
     step_t *new;
@@ -255,9 +205,6 @@ trace_t
     return R;
 }
 
-// Adapted version of the free_list function by Alistair Moffat:
-// https://people.eng.unimelb.edu.au/ammoffat/ppsaa/c/listops.c
-// Data type and variable names changed
 void
 free_trace(trace_t* R) {
     step_t *curr, *prev;
@@ -271,11 +218,6 @@ free_trace(trace_t* R) {
     free(R);
 }
 
-/* my function definitions --------------------------*/
-
-// add your function definitions here ...
-
-/* print out the state */
 void
 print_state(state_t state) {
     int i;
@@ -463,12 +405,10 @@ stage1_2(action_t **action_traces, action_t **actions, int num_acts,
                 for (j = i; j <= num_steps && !found && 
                      j != num_steps; j ++) {
                     for (k = 0; k <= num_acts; k ++) {
-                        /* change the trace based on the effect of the action */
                         if (actions[k]->name == action_traces[j]->name) {
                             alter_action(actions[k], sample);
                         }
                     }
-                    /* if found then stop the loop */
                     if (stage1) {
                         found = check_candidate1(candidate, sample);
                     } else {
@@ -518,7 +458,7 @@ stage1_2(action_t **action_traces, action_t **actions, int num_acts,
     sample = NULL; 
 }
 
-int //action_t **
+int
 get_actions(action_t **actions, int c) {
     int num_acts = 0, num_sprt = 0;
     /* the number of ':' will determine if the command is for assigning the
@@ -583,21 +523,3 @@ action_t
     }
     return initial_action;
 }
-
-int 
-get_num_actions(action_t** action_arr) {
-    int i = 0;
-    while (action_arr[i] != CH_NL) {
-        i ++;
-    }
-    return i;
-}
-
-action_t
-**get_traces(action_t** actions, int num_actions) {
-    action_t **action_traces;
-    return;
-}
-
-/* Algorithms are fun */
-/* ta-da-da-daa!!! ---------------------------------------------------------*/

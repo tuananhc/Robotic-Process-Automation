@@ -1,0 +1,181 @@
+Robotic Process Automation
+RPA is an emerging technology that allows organizations to automate repetitive clerical work by executing
+software scripts (RPA scripts) that support executions of sequences of fine-grained interactions with Web and
+desktop applications. An example of such repetitive clerical work is transferring data across information systems.
+
+Input Data:
+Your program should read input from stdin. The input starts by listing names of Boolean variables, one per
+line, that must be set to true in the initial state, where the initial state is defined by values of all the Boolean
+variables before a trace gets executed. All the other variables must be set to false in the initial state. An input line
+1 with a single character ‘#’ denotes the end of input of the initial state. The lines that follow define actions, one
+action per line. Each action is defined as a quintuple. The first two elements of an action list its precondition,
+i.e., variables that must be set to true and false to enable the action. The third element is the name of the action.
+The last two elements of an action specify its effect, i.e., variables that are set to be true and false after the action
+is executed. Another input line with a single character ‘#’ denotes the end of the action definition section of the
+input. The subsequent input characters encode a trace, each referring to the name of the action executed in the
+corresponding position of the trace. All the lines of the input, except the last line, are not empty. The following
+file test0.txt defines the initial state, three actions, and a trace executed from the initial state (the numbers in
+italics show line numbers and are not part of the input file).
+
+1 a
+2 b
+3 x
+4 y
+5 z
+6 #
+7 ab:c:X:cf:b
+8 f::V:pq:
+9 fpq:b:U::pq
+10 #
+11 XVUVU
+12
+
+Boolean variables are denoted by characters ‘a’, ‘b’, . . . , ‘z’ (lower-case Latin alphabet letters), while action
+names are referred to as ‘A’, ‘B’, . . . , ‘Z’ (upper-case Latin alphabet letters). Hence, the above input specifies the
+initial state in which variables a, b, x, y, and z are set to true, while variables c, d, . . . , w are set to false. The
+input trace consists of five actions, see line 11. From the initial state, the trace commences by executing action X,
+followed by an execution of action V, followed by action U, followed by another occurrence of V, and concludes
+by another occurrence of action U. Actions U, V, and X are defined at lines 7–9 of the input. The five components
+of each action are delimited using the colon character ‘:’. For example, the action defined at line 7 of the input
+has name X. This action can occur in a state where variables a and b are set to true, and variable c is set to false.
+Once this action is executed, variables c and f are set to true, while variable b is set to false.
+
+The first version of your program should read the input from stdin, ensure that the input trace is valid, and print
+out some basic information so that you can be sure you have read the inputs correctly. A valid trace is composed
+of actions that occur in states that satisfy their preconditions; otherwise, the trace is invalid. The required output
+from this stage generated for test0.txt file shown above is the summary shown below on the left.
+
+==STAGE 0===============================
+Number of distinct actions: 3
+Length of the input trace: 5
+Trace status: valid
+----------------------------------------
+abcdefghijklmnopqrstuvwxyz
+> 11000000000000000000000111
+X 10100100000000000000000111
+V 10100100000000011000000111
+U 10100100000000000000000111
+V 10100100000000011000000111
+U 10100100000000000000000111
+
+==STAGE 0===============================
+Number of distinct actions: 3
+Length of the input trace: 5
+Trace status: invalid
+----------------------------------------
+abcdefghijklmnopqrstuvwxyz
+> 11000000000000000000000111
+X 10100100000000000000000111
+V 10100100000000011000000111
+U 11100100000000000000000111
+V 11100100000000011000000111
+
+The basic information printed by your program should specify the number of distinct actions, length of the trace,
+and the status of the trace read from the input, which are 3, 5, and valid, respectively, for input file test0.txt.
+This information should be followed by a delimiter line, followed by the detailed specification of the trace given
+as a table of ASCII characters. The columns in this table refer to variables, while rows specify states and executed
+actions. A state is encoded as a sequence of ‘0’ and ‘1’ characters, where ‘0’ indicates that the corresponding
+variable (specified in the column header) is set to false and ‘1’ indicates that the variable is set to true. The first
+printed state, denoted by character ‘>’ in the left-most column, specifies the initial state. Each subsequent line
+prints the next executed action, followed by the sequence of zeros and ones that encodes the state one achieves
+after executing the action. For instance, the execution of action X in the example input trace flips the values of
+variables b and f in the initial state.
+If the input trace is invalid, your program should report the corresponding status of the trace and print its
+valid prefix. For example, if line 9 in file test0.txt is changed from “fpq:b:U::pq” to “fpq:b:U:b:pq” to
+obtain file test1.txt, then your program should produce the output shown above on the right. In this case,
+the second occurrence of action U cannot take place as its precondition requires that variable b is set to false.
+However, b is set to true after the execution of the first four actions of the trace.
+2
+All inputs will follow the format specified in the Input Data section. No input action will specify that a
+variable is equal (or should be set) to true and false simultaneously, e.g., “a:a:X:b:b”. Also, no input action
+will set a value of a variable as in the precondition, e.g., “a:b:Y:a:b”. Your program will not be tested on
+erroneous inputs. Refer to the input files distributed with this specification for the exact formatting of inputs.
+
+Extend your program from Stage 0 to perform a basic check of a candidate routine by identifying all trace 
+subsequences that produce the same effect. All of the Stage 0 output should be retained. If the input proceeds with
+a line with a single character ‘#’, your program should generate Stage 1 output, which starts with this line:
+
+==STAGE 1===============================
+
+For each subsequent input line containing a candidate routine specified as a sequence of action names, discover
+and print non-overlapping sub-sequences of consecutive actions of the trace that produce the same cumulative
+effect as the candidate routine. Proceed from left to right in the trace. Once the shortest sub-sequence with the
+desired effect is identified, record it and restart searching from the next position in the trace.
+The cumulative effect of a routine or sequence of actions is determined as all the values (true and false)
+set to the Boolean variables as effects of the actions executed in the order they appear in the routine/sequence.
+Considering input file test0.txt, candidate routine VU generates the cumulative effect of setting variables p
+and q to false. First, action V sets p and q to true. Next, action U updates them to be false. Hence, would input
+file test0.txt be modified to contain a single character ‘#’ at line 12 and string “VU” at line 13 to encode a
+candidate routine followed by the new line character, Stage 1 output should proceed by printing these lines:
+
+Candidate routine: VU
+1: VU
+3: VU
+
+Here, the first line specifies the candidate routine and the two subsequent lines refer to two sub-sequences that
+start at positions 1 and 3 of the input trace (counting positions from zero); trace positions are printed using the
+formatting string “%5d”. These two sub-sequences generate the same cumulative effect as the candidate routine.
+Each subsequent input line with a candidate routine should be processed in the same way, and its output
+should be separated from the previous output by the delimiter line composed of ‘-’ characters, refer to Stage 0
+specification above for examples of using the delimiter line. Consider input file test2.txt listed below.
+
+1 a
+2 #
+3 a:b:A:x:
+4 x:b:B:yz:
+5 x:b:C:y:
+6 ::D:xyz:
+7 ::E:z:
+8 x::F:u:xyz
+9 a:ij:G:ij:
+10 xy:b:H::ij
+11 #
+12 DFABFACGHE
+13 #
+14 AB
+15 D
+16 #
+17 D
+18 AB
+19
+
+The Stage 1 output for input file test2.txt is shown below on the left. Indeed, both sequences of actions D and
+AB have the cumulative effect of setting variables x, y, and z to true, and are therefore identified. Sub-sequences
+with smaller start positions should be printed first.
+
+==STAGE 1===============================
+Candidate routine: AB
+0: D
+2: AB
+----------------------------------------
+Candidate routine: D
+0: D
+2: AB
+
+Extend your program from Stage 1 to perform further checks for the input candidate routines. All of the output
+from Stages 0 and 1 should be retained. If your input after Stage 1 continues with a single character line
+of ‘#’, process subsequent input lines with candidate routines (one routine per line). This time, an identified
+sub-sequence of actions in the input trace should be allowed to modify the values of variables not set by the
+candidate routine. However, in this case, once all the actions of the identified sub-sequence are executed, the
+3 values of such variables must be set to the values they had before executing the sub-sequence. Note that this
+knowledge of variable values can be obtained from the preconditions of the trace actions.
+For example, the sub-sequence of actions ACGHE in the trace of input file test2.txt sets values of variables
+i, j, x, y, and z. Note that, to execute, action G requires that i and j are both set to false, and sets them to true.
+However, next, action H sets them to false, which are their original values at the start of the sub-sequence. Hence,
+the cumulative effect of executing ACGHE is the same as that one of executing D or AB, i.e., setting x, y, and z to
+true. 
+
+==STAGE 2===============================
+Candidate routine: D
+0: D
+2: AB
+5: ACGHE
+----------------------------------------
+Candidate routine: AB
+0: D
+2: AB
+5: ACGHE
+
+If your program concludes with Stage 2, at the end, it should output this line:
+
+==THE END===============================
